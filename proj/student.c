@@ -26,7 +26,7 @@ void createStudent(char* fname, char* lname, int age, int id)
   //  - the firstName and lastName strings should be dynamically created
   //    based on the size of the fname and lname args
 
-Student* st = (Student*) malloc(sizeof(students));
+Student* st = (Student*) malloc(sizeof(Student));
 
 st -> firstName =  (char*) malloc(strlen(fname)+1 * sizeof(char*));
 
@@ -42,7 +42,7 @@ st -> id = id;
 
 students[numStudents] = st;
 
-numStudents ++;
+numStudents++;
 
 }
 
@@ -82,22 +82,27 @@ void saveStudents(int key)
   // (optionally) encrypt the whole string before writing it to disk (see cdemo/fileio3.c)
 FILE* fp;
 
-fp = fopen("studentdata.txt","w");
-if(fp){
+fp = fopen(STUFILE,"w");
+if (fp)
 
+{
+
+char buff[256];
 	for( int i = 0; i <  numStudents; i++){
-		caesarEncrypt(students[i] -> firstName, key);
-		caesarEncrypt(students[i] -> lastName, key);
-		char buff[256];
-		sprintf(buff, "%d ", students[i] -> age);
-		caesarEncrypt(buff, key);
-		char b2[256];
-		
-		sprintf(b2,"%ld", students[i] -> id);
-		caesarEncrypt(b2, key);
-		fprintf(fp, "%s %s %s %s\n", students[i] -> firstName, students[i] -> lastName, buff, b2);
-		fclose(fp);
- }
+		Student* st = students[i];
+
+		sprintf(buff, "%s %s %d %ld", students[i] -> lastName, students[i] -> lastName, students[i] -> age, students[i] -> id);
+
+			if(key != 0){
+
+				caesarEncrypt(buff, key);
+			}
+
+
+		fprintf(fp, "%s\n",  buff);
+}
+
+fclose(fp);
 }
 
 
@@ -121,38 +126,40 @@ FILE* fp;
 
 fp = fopen("studentdata.txt", "r");
 if (fp){
-numStudents = 0;
 
 while(1){
-	
+
+
 char b1[256];
 char b2[256];
 char b3[256];
 char b4[256];
 
-if (fscanf(fp, "%s %s %s %s\n", b1, b2, b3, b4) == 4){
+int match = fscanf(fp, "%s %s %s %s\n", b1, b2, b3, b4);
+	if(match ==  4){
 
+		if(key != 0){
 
 		caesarDecrypt(b1, key);
 		caesarDecrypt(b2, key);
 		caesarDecrypt(b3, key);
 		caesarDecrypt(b4, key);
+}
 			int age;
 			long id;
 			sscanf(b3, "%d", &age);
 			sscanf(b4, "%ld", &id);
-			
 
 
 createStudent(b1,b2,age,id);
 
 }
+else 
+   break;
 
-else break;
-}
 }
 fclose(fp);
-
+}
 }
 
 

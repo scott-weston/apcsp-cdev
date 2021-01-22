@@ -24,25 +24,31 @@ char shiftChar(char c, int shift, int direction)
   //   shiftChar('b', 3, 0) : '8'
 
 if (direction == 1){
+
 	for( int i = 0; i < strlen(CHARS); i++){
+
 		if(c  == CHARS[i]) {
 	
 			return CHARS[( i + shift)% 62];
-}
-}
+		}
+	}
 } 
 
  else {
 	shift = shift * -1;
-	 for( int i = 0; i < strlen(CHARS); i++){
-                if(c  == CHARS[i]) {
-			while( i + shift < 0){
-		shift += 62;
 
-		}
+	 for( int i = 0; i < strlen(CHARS); i++){
+
+                if(c  == CHARS[i]) {
+
+			while( i + shift < 0){
+
+				shift += 62;
+
+			}
                         return CHARS[( i + shift)];
-}
-}
+		}
+	}
 }
  return 1;
 }
